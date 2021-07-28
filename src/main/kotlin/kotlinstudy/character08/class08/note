@@ -1,0 +1,237 @@
+类委托和属性委托
+
+
+1  类委托
+
+类委托是代理模式的应用  ，而代理模式可作为继承的一个不错的替代。
+类委托的本质就是将本类需要实现的部分方法委托给其他对象——相当于借用其他对象
+的方法作为自己的实现。
+
+
+例如定义了一个类，该类实现了一个接口，单该类并不是先该接口中的抽象方法，
+而是借用其他对象中的方法来实现，被借用的对象被称为被委托对象
+
+
+示例：
+
+interface Outputable {
+
+    fun output(msg: String)
+
+    var type: String
+
+
+}
+
+class DefaultOutput : Outputable {
+    override fun output(msg: String) {
+        for (i in 1..6) {
+            println("<h${i}>${msg}</h${i}")
+
+        }
+    }
+
+    override var type: String = "输出设备"
+
+
+}
+
+
+class Projector() : Outputable by DefaultOutput() {
+
+    override fun output(msg: String) {
+        println("重写方法")
+
+    }
+}
+
+//使用委托  将b中的实现拿来自己使用
+class Printer(b: DefaultOutput) : Outputable by b
+
+
+
+2  属性委托
+
+属性委托可以将多个类的类似属性统一交给对象集中实现，这样就可避免每个类都需要单独实现这些属性
+
+对于制定了委托对象的属性而言，由于它的实现是交给委托对象处理，因此开发者不能为委托
+属性提供getter 和setter 方法，Kotlin 也不会为委托属性提供getter setter 方法的默认实现
+
+一旦将某个对象制定为属性的委托对象，该对象就会全面接管该属性的读取（getter）和
+写入（setter） 操作，因此属性的委托对象无须实现任何接口，但是一定要提供一个getValue()
+方法和setValue 方法（val属性无须提供setter方法）
+
+对于只读属性而言，由于程序无须设置属性值，只要能读取属性值即可，因此只读属性的委托对象只需提供使用operator 修饰的
+getValue() 方法。该方法的参数和返回值要求如下：
+
+ thisRef:  该参数代表属性所属的对象，因此该参数的类型必须是属性所属对象的类型（对于扩展属性，指被扩展的类型）或其超类型
+
+ property： 该参数代表目标属性，该参数的类型必须是KProperty<*>或其超类型。
+
+ 返回值： 该方法必须返回与目标属性相同的类型
+ 对于读写属性  ，属性的委托对象必须额外提供一个使用operator修饰的setValue()方法，该方法不需要返回值，但需要以下参数
+
+
+thisRef:
+property:
+
+newValue: 该参数代表目标属性新设置的属性值，该参数的类型必须具有和目标属性相同的类型或其超类型
+
+
+
+属性的委托对象的getValue(),setValue() 方法既可以是成员方法，也可以是扩展方法。总之，只要是符合规则的两个方法均可。
+
+
+提示： Kotlin标准库在 kotlin.properties 下提供了ReadOnlyProperty 和  ReadWriteProperty 两个接口，其中
+ReadOnlyProperty 接口定义了一个符合只读属性委托标准的getValue() 抽象方法，因此
+该接口的实现类可作为只读属性的委托对象；而ReadWriteProperty接口定义了符合读写属性委托标准的getValue()和setValue()
+抽象方法，因此该接口的实现类可作为读写属性的委托对象
+
+
+示例：
+
+
+    package zengqiang.kotlinstudy.character08.class08
+
+    import kotlin.properties.ReadWriteProperty
+    import kotlin.reflect.KProperty
+
+    /**
+    Time: 2020-03-25 上午9:59
+    Author:alan
+    Desc:
+     */
+    open class MyDelegation : ReadWriteProperty<PropertyDelegation, String> {
+        private var _backValue = ""
+
+        //通过实现ReadWriteProperty 重写方法实现
+        override fun getValue(
+            thisRef: PropertyDelegation,
+            property: KProperty<*>
+        ): String {
+            return _backValue
+
+        }
+
+        override fun setValue(
+            thisRef: PropertyDelegation,
+            property: KProperty<*>, value: String
+        ) {
+            _backValue = value
+        }
+
+        //下面是自己实现
+    //    private var _backValue = "默认值"
+    //
+    //    operator fun getValue(
+    //        thisRef: PropertyDelegation,
+    //        property: KProperty<*>
+    //    ): String {
+    //        println("${thisRef} 的${property.name} 属性执行getter方法")
+    //        return _backValue
+    //    }
+    //
+    //    operator fun setValue(
+    //        thisRef: PropertyDelegation,
+    //        property: KProperty<*>,
+    //        newValue: String
+    //    ) {
+    //
+    //        _backValue = newValue
+    //    }
+    }
+
+
+
+package zengqiang.kotlinstudy.character08.class08
+
+/**
+Time: 2020-03-25 上午9:58
+Author:alan
+Desc:属性委托示例
+ */
+class PropertyDelegation {
+
+    var name:String by MyDelegation()
+}
+
+
+
+
+
+    //使用属性委托
+    val pd = PropertyDelegation()
+    println(pd.name)
+
+    pd.name = "fkit.org"
+    println(pd.name)
+
+
+
+
+
+3 延迟属性
+
+Kotlin提供了一个lazy()函数，该函数接受一个Lambda 表达式作为参数，病返回一个Lazy<T>对象。
+
+Lazy<T> 对象包含了一个符合只读属性委托要求的getValue() 方法，因此该Lazy<T>对象 可作为只读
+属性的委托对象
+
+
+注意：  Lazy<T> 对象只能作为只读属性的委托对象
+
+
+示例：
+
+
+val lazyProp: String by lazy {
+
+    println("第一次执行")
+    "疯狂软件"
+}
+
+ 访问lazyProp 就相当于 访问Lazy<T>中的getValue方法  ，此方法是添加线程安全的同步锁，开销略大
+ 因此lazy有三种模式
+
+    LazyThreadSafetyMode.SYNCHRONIZED  ,此模式为默认模式
+    LazyThreadSafetyMode.PUBLICATION  此模式多线程可同时执行
+    LazyThreadSafetyMode.NONE  不会有任何线程安全相关的操作和开销
+
+
+    4   属性监听
+
+
+
+   kotlin.properties 包下提供了一个Delegates 对象的声明（单例对象），该对象包含如下两个常用方法
+
+
+   observable  一定设置成功
+
+
+   vetoable  添加判断条件
+
+   //属性监听
+
+   //var prop: String by Delegates.observable("初始化值") {
+   //
+   //        property, oldValue, newValue ->
+   //
+   //    println("${property}的值从${oldValue}变成了 $newValue")
+   //
+   //
+   //}
+
+
+   var prop: Int by Delegates.vetoable(10) { property, oldValue, newValue ->
+       println("${property}的值从${oldValue}变成了 $newValue")
+
+       newValue > oldValue  //如果为true  修改成功  false 会修改失败
+
+   }
+
+
+
+
+
+
+

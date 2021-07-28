@@ -1,0 +1,180 @@
+匿名函数
+
+
+1 匿名函数的用法
+
+
+示例：
+         //定义一个匿名函数
+            var test = fun(x: Int, y: Int): Int {
+                return x + y
+            }
+
+            println(
+                test(1, 2)
+            )
+
+
+2 使用匿名函数作为方法的参数
+
+示例：
+               //使用匿名函数作为filter() 方法的参数
+               var filteredList = listOf(10, 20, 30, 50, 60)
+                   .filter(fun(e): Boolean {
+                       return Math.abs(e) > 50
+                   })
+
+               println(filteredList)
+
+
+3 匿名函数和Lambda表达式中的return
+
+
+匿名函数的本质依然是函数，因此匿名函数的return则用于返回该函数本身；而Lambda表达式的return
+用于返回它所在的函数，而不是返回Lambda表达式。
+
+
+示例：
+
+    var list = listOf(1, 2, 3, 5, 6)
+
+    list.forEach(fun(e) {
+
+        println("元素依次为${e}")
+        return
+
+    })
+
+    list.forEach {
+        println("元素依次为Lambda${it}")
+        return
+    }
+
+
+    /**
+     * 元素依次为1  返回该函数本身
+    元素依次为2
+    元素依次为3
+    元素依次为5
+    元素依次为6
+    元素依次为Lambda1  返回它所在的函数，而不是返回Lambda表达式
+    如果想让return 返回Lambda 可以使用  return@forEach代替return
+     */
+
+
+4捕获上下文中的变量和常量
+
+示例：
+            fun makeList(ele: String): () -> List<String> {
+                var list: MutableList<String> = mutableListOf()
+                fun addElement(): List<String> {
+                    //向list中添加一个元素
+                    list.add(ele)
+                    return list
+                }
+
+                return ::addElement
+
+
+            }
+
+
+                val add1 = makeList("孙悟空")
+                println(add1())
+                println(add1())
+
+
+                val add2 = makeList("猪八戒")
+                println(add2())
+                println(add2())
+
+
+                打印结果：[孙悟空]
+                     [孙悟空, 孙悟空]
+                     [猪八戒]
+                     [猪八戒, 猪八戒]
+
+                     由此说明上面的两个变量中分别有一个list副本
+
+ 5 内联函数（用来复制粘贴函数调用的表达式,用来减少一个函数被频繁使用赋值而产生的内存以及时间的开销）
+
+ 语法  使用inline   关键字修饰带函数形参的函数即可
+
+
+
+ 示例：
+
+//使用inline 关键字 标记 就会成为一个内联函数
+inline fun map(data: Array<Int>, fn: (Int) -> Int): Array<Int> {
+    //使用匿名函数创建Array,可以去掉Array的泛型
+//    val result = Array(data.size, fun(int: Int): Int { return 0 })
+
+    //使用匿名函数以及函数放在括号外 创建Array,可以去掉Array的泛型
+//    val result = Array(data.size){ fun(int: Int): Int { return 0 }}
+
+    //使用Lambda表达式
+//    val result = Array(data.size, { 0 })
+
+    //使用Lambda表达式 以及函数放在括号外
+    val result = Array(data.size) { 0 }
+
+    for (i in data.indices) {
+        result[i] = fn(data[i])
+
+    }
+
+
+    return result
+
+
+}
+
+
+6 部分禁止内联
+    使用inline 修饰函数后，所有传入该函数的Lambda表达式或函数都会被内联化，如果又希望该函数中的某一个或某几个函数类型的形参
+    不会被内联化，可以使用noinline 修饰它们
+
+
+7 非局部返回
+
+默认情况下Lambda表达式中不能使用return  如果是内联的Lambda表达式 会被直接赋值粘贴到它的函数中，所以可以使用return ，
+返回它所在的函数，这种返回被称为局部返回
+
+示例：
+
+
+
+
+
+
+/**
+ * 非局部返回示例
+ */
+fun nonLocalityReturn(arrayOf: Array<Int>, any: (Int) -> Unit) {
+
+    for (i in arrayOf) {
+        any(i)
+
+    }
+
+}
+
+
+    //如果不适用inline 修饰会报错(return@nonLocalityReturn可编译成功)  或者使用inline关键字  如果使用inline修饰不会报错，或者
+    nonLocalityReturn(arrayOf(2, 35, 76, 7, 8, 9, 4)) { println(it); return }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

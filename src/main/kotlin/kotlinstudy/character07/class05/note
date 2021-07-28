@@ -1,0 +1,162 @@
+类的继承
+
+1 语法
+
+修饰符  class SubClass:SuperClass{
+        //类定义部分
+}
+
+kotlin 的顶层父类是Any   kotlin的类默认是final  为了让一个类能派生子类
+需要使用open修饰符
+
+
+2 子类的主构造器
+
+需要在继承父类的时候指定委托的构造器 使用:SuperClass(父类构造器的参数列表)
+
+
+3 子类的次构造器
+
+
+
+class Man : Person {
+
+
+    //因为这个构造器没有委托父类的任何构造器，那么编译器将默认委托父类无参构造
+    constructor(nt: Int) {
+        println("子类没有委托一参构造器")
+    }
+
+    constructor(name: String) : super(name) {
+        println("子类一参构造器")
+    }
+
+
+    constructor(name: String, age: Int) : super(name, age) {
+        println("子类两参构造器")
+
+
+    }
+
+
+    constructor(name: String, age: Int, sex: String) : super(name, age, sex) {
+        println("子类三参构造器")
+
+    }
+
+}
+
+
+
+open class Person {
+
+    constructor() {
+        println("父类无参构造")
+    }
+
+    constructor(name: String) {
+        println("父类一个参构造器")
+    }
+
+    constructor(name: String, age: Int) {
+        println("父类两个参构造器")
+
+    }
+
+    constructor(name: String, age: Int, sex: String) {
+        println("父类三个参构造器")
+    }
+
+
+}
+
+
+
+fun main() {
+
+//    SubClass("张三").hello()
+
+    Man(1)
+    Man("hell")
+    Man("张三", 12)
+    Man("张三", 12, "男")
+
+
+}
+
+
+打印结果：
+
+父类无参构造
+子类没有委托一参构造器
+父类一个参构造器
+子类一参构造器
+父类两个参构造器
+子类两参构造器
+父类三个参构造器
+子类三参构造器
+
+
+
+
+4   重写父类的方法
+  示例：
+
+  open class Bird {
+
+      //飞翔方法
+      open fun fly() {
+
+          println("我在天空飞行飞翔")
+      }
+
+      private fun eat() {
+          println("我在天上吃东西")
+      }
+  }
+
+
+
+  class Ostrich : Bird() {
+
+      //鸵鸟重写鸟类的飞行方法
+      override fun fly() {
+          println("我在陆地上开心的奔跑")
+      }
+
+      //此方法不是重写方法，不能重写
+      fun eat() {
+          println("我在陆地吃东西")
+      }
+  }
+
+
+
+
+
+5   重写父类的属性
+
+    1  父类属性必须使用open修饰，子类必须使用override关键字
+    2 重写的子类属性需要提供大于等于父类的权限，分为两方面
+    ，第一方面是 访问修饰符， 子类的访问权限应大于等于父类的访问权限
+    第二方面是 val 可以被var重写，var 不能被val重写
+
+
+  6 super 限定
+
+  需要在子类调用父类中被覆盖的方法或属性可以使用super限定
+
+    super 的规则：
+
+        如果子类重写父类， 子类中没有与父类同名属性，则可以省略super
+         如果没有使用super限定，在方法中使用名为a的属性，系统查找顺序为：
+         1 在本方法内部寻找
+         2 在本类中查找
+         3 在父类查找，如果父类中没有追溯a的所有父类，知道Any类，
+         没有的话出现编译错误
+
+  7 强制重写
+
+   解决一个子类从两个超类型中继承相同名称属性或方法
+
+语法：super<类型名称>

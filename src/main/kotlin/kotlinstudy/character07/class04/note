@@ -1,0 +1,157 @@
+隐藏和封装
+
+1 包和导包
+
+使用package  关键字进行报的定义
+
+在导包的时候使用  as为导入的包指定别名  解决类名冲突的问题
+例如java.util.Date  和java.sql.Date
+ import java.util.Date
+ import java.sql.Date as SDate
+
+ 下面就可以通过 使用SDate来 创建  java.sql.Date 对象
+
+
+kotlin 中的import  除了可以导入类之外，还可以导入
+
+    1 顶层函数和属性
+    2 在对象中声明的函数和属性
+    3枚举常量
+
+
+2 访问控制符
+
+
+private： 与java类似，private成员只能在该类的内部或文件的内部被访问
+internal: 可以在类的内部或者同一个模块内被访问
+protected: 可以在累的内部或者其子类中被访问
+public：无限制访问
+
+
+Kotlin  默认修饰符为public
+
+
+
+3 位于包内的顶层成员
+
+   1对于包内的顶层成员（包括顶层类，接口和属性，函数），不能使用protected
+
+   2属性的getter方法总是与属性保持一致
+
+   3直接定义在包中的顶层函数，属性，会转换成为kotlin所生成类中的 静态方法和属性
+
+
+
+4 位于类 接口内的成员
+
+    对于位于类，接口内的成员（包括顶层类，函数，接口，属性），访问控制符任选其一
+
+    如果重写了一个protected成员，且没有显式制定访问权限修饰符，那么该成员依然是protected访问权限
+
+
+    如果需要给主构造器添加访问权限修饰符，则需要使用constructor关键字，并在关键字之前
+    添加public internal protected private 控制符
+
+
+5 主构造器和初始化块
+
+    主构造器没有执行体，但可以声明形参
+   主构造器形参的作用：
+
+    1 初始化块可以使用主构造器定义的形参
+    2 在声明属性时可以使用主构造器定义的形参
+
+    由此可见，kotlin的主构造器更像java的初始化块
+
+   通过调用主构造器创建对象  系统会调用该类里定义的初始化块。多个初始化块顺序执行
+
+   由此可见，主构造器的作用就是为初始化块提供参数，因此主构造器更像是初始化块的一部分，
+   也可以说，初始化块就是主构造器的执行体
+
+
+   6 次构造器和构造器重载
+
+   因为调用主构造器会执行初始化块，所以Kotlin要求所有的次构造器 必须委托调用主构造器，可以直接委托或者通过
+   别的次构造器间接委托。所谓“委托”，其实就是要先调用主构造器（执行初始化块中的代码）
+   然后再执行次构造器代码。
+
+
+
+示例：
+
+class Student(name: String) {
+    var name: String
+    var age: Int
+    var info: String?
+
+    init {
+        this.name = name
+        this.age = 0
+        info = null
+
+
+//        println("name:$name age:$age info:$info")
+        println("Studeng的初始化块")
+
+    }
+
+    constructor(name: String, age: Int, info: String?) : this(name, age) {
+        this.info = info
+//        println("name:$name age:$age info:$info")
+
+    }
+
+    constructor(name: String, age: Int) : this(name) {
+
+        this.age = age
+//        println("name:$name age:$age info:$info")
+
+
+    }
+
+
+}
+
+
+fun main() {
+//    Person("李增强")
+    val stu1 = Student("李增强")
+    val stu2 = Student("任香芹", 20)
+
+    val stu3 = Student("张三", 20, "hello")
+
+
+    println("name:${stu1.name} age:${stu1.age} info:${stu1.info}")
+    println("name:${stu2.name} age:${stu2.age} info:${stu2.info}")
+    println("name:${stu3.name} age:${stu3.age} info:${stu3.info}")
+
+
+}
+
+
+主构造器声明属性
+
+kotlin 允许在主构造器上声明属性，直接在参数之前使用var或val即可声明属性——使用var声明读写属性，使用val声明只读属性。当
+程序调用主构造器创建对象时，传给该构造器的参数将会赋值给对象的属性
+
+
+案例：
+
+class Man(var height: Int, var age: Int)
+
+    var man = Man(130, 20)
+
+    println(man.age)
+    println(man.height)
+
+
+
+    构造器中参数有默认值的话，程序可以不进行传参调用
+
+
+
+
+
+
+
+

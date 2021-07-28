@@ -1,0 +1,201 @@
+型变
+
+1 泛型型变的需要
+
+Java泛型不支持型变  。通俗的说，List<String> 不是List<Object>的子类，因此List<String>
+不能直接赋值给List<Object>
+
+Java泛型不支持型变的原因：
+
+public class JavaNoVariance {
+    public static void main(String[] args) {
+        List<String> strs = new ArrayList<>();
+//        List<Object> objs = strs;
+//上面这行如果能够编译成功，那么下面这行就会引发异常，因为objs引用的集合元素必须是string类型
+//        objs.add(10);
+    }
+}
+
+Java泛型不支持型变的主要是为了保证程序的安全性
+
+
+
+
+2 声明处型变
+
+Kotlin 处理泛型型变的规则很简单
+
+如果泛型只需要出现在方法的返回值声明处（不出现形参声明中），那么该方法就是只取出泛型对象
+，因此该对象就支持泛型协变（相当于通配符上限） ：如果一个类的所有方法都支持泛型协变，呢么该类的泛型参数
+可以使用out修饰
+
+如果泛型只需要出现方法的形参中（不出现返回值声明中） ，那么该方法就只是传入泛型对象，
+因此该对象就支持泛型逆变（相当于通配符下限），如果一个类的所有方法都支持泛型逆变，那么该类的泛
+型参数可使用in 修饰
+
+
+示例：
+
+  //支持逆变（通配符下限）
+class Item<in T> {
+
+    fun foo(t: T) {
+        println(t)
+    }
+
+
+}
+
+
+支持协变（通配符上限）
+class User<out T> constructor(val info: T) {
+
+    //此处不能用var  否则就有setter 方法
+    //setter 方法会导致T出现在方法形参中
+//    val info: T
+//
+//    constructor(info: T) {
+//        this.info = info
+//    }
+
+    fun test(): T {
+
+        println("执行test方法")
+        return info
+    }
+
+
+}
+
+
+ //此时 T的类型是String
+    var user = User<String>("fkit")
+
+    println(user.info)
+    //对于u2而言   它的类型是User<Any> 此时T的类型是Any
+
+    var u2: User<Any> = user
+
+    //一旦声明了泛型类支持协变，程序即可安全的将User<String> ,User<Int> 赋值给
+//    User<Any>
+    println(u2.info)
+
+    var userInt = User<Int>(1)
+    u2 = userInt
+    println(u2.info)
+
+
+    var it = Item<Any>()
+
+    it.foo(20)
+
+
+    //im2 的实际类型是Any 但是我们声明了 im2 的类型为Item<String>,所以只能是String
+    var im2: Item<String> = it
+
+    im2.foo("Kotlin")
+
+
+
+3  使用处型变：类型投影
+
+    声明时协变 有个限制：要么所有的方法都只用泛型声明返回值类型，要么只用泛型声明参数
+    如果一个类中的方法即使用泛型作为形参，又需要泛型作为返回值，就不能使用声明处型变
+
+
+   示例：
+
+        //使用处型变  因为Array不支持声名处型变
+        fun copy(from: Array<out Any>, to: Array<Any>) {
+            //此处from的类型是 Array<out Any>这就是使用处协变。也就是说  from 的类型可以是Array<Int> Array<String>
+            //需要说明的是，如果将from 参数声明为Array<out Any>类型，那么就以为着只能安全的从该from参数代表中取出元素，而不能
+            //将元素添加到from数组中，因为我们无法预测 from参数是Array<Int> 还是Array<String>
+
+            val len = if (from.size < to.size) from.size else to.size
+
+            for (i in 0 until len) {
+                to[i] = from[i]
+            }
+        }
+
+
+
+
+
+
+    var arr1 = arrayOf(2, 3, 15, 26)
+    var arr2: Array<Any> = arrayOf(4, 17, 3, 7, 9, 43)
+
+    copy(arr1, arr2)
+    println(arr2.contentToString())
+
+
+
+使用处逆变
+
+//声明使用出逆变
+
+
+fun fill(dest: Array<in String>, value: String) {
+    if (dest.size > 0) {
+        dest[0] = value
+    }
+}
+
+
+
+    //使用处逆变
+
+    var arr1: Array<CharSequence> = arrayOf("a", "b", StringBuilder("cc"))
+    fill(arr1, "xxxx")
+    println(arr1.contentToString())
+
+
+    var intArr: Array<in Int> = arrayOf(2, 5, 30)
+    println(intArr)
+    intArr.set(0, 33)
+
+    var numArr: Array<Number> = arrayOf(2, 4.2, 20.3)
+    intArr = numArr
+
+
+    println(intArr.contentToString())
+
+
+4  星号投影    （为了处理Java的原始类型）
+
+ 例如以下java代码
+
+ ArrayList list=new ArrayList();
+
+ 虽然java的List 和ArrayList  都有泛型声明 但程序并没有为他们传入类型参数，这在
+ java中是允许的。这种做法被成为“原始类型”
+
+
+但在Kotlin中需要写成以下形式
+
+var list:ArrayList<*> =arrayListOf(1,"Kotlin")
+
+上面的写法就是星号投影
+
+
+5  泛型函数
+
+语法：
+
+    fun <T,S> 函数名(形参列表) ：返回值类型{
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+

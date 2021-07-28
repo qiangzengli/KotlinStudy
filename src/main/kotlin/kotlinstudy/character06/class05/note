@@ -1,0 +1,69 @@
+1 Lambda
+
+
+    语法：
+        {(形参列表)->
+
+            // 零条到多条可执行语句
+
+        }
+
+
+
+2 调用Lambda 表达式
+
+        fun main() {
+
+            println(square)
+            println(result(3, 4))
+
+        }
+
+
+        var square = { n: Int -> n * n }(2)
+
+        var result = { base: Int, exponent: Int ->
+
+            var result = 1
+            for (i in 1..exponent) {
+
+                result *= base
+
+            }
+
+            result
+        }
+
+      3 利用上下文推断类型
+
+
+
+        //给变量制定类型   参宿类型可以省略
+        var square1: (Int) -> Int = { n -> n * n }
+
+
+            //因为 dropWhile  的参数类型为(T)->Boolean  所以表达式能够推断类型为集合元素类型
+
+        var list = listOf("Java", "Kotlin", "Go")
+
+
+        var rt = list.dropWhile { e -> e.length > 3 }
+        println(rt)
+
+
+
+      4 省略形参名：当表达式只有一个形参  时可以使用 it代替
+
+
+      5 调用Lambda 表达式  的约定
+
+      Kotlin语言有个约定  ：如果函数的最后一个参数是函数类型，而且你打算传入一个Lambda表达式作为相应的参数，那么就荀彧在圆括号之外制定Lambda表达式
+
+        如果Lambda表达式是唯一参数，() 也可以省略掉
+
+
+
+        6 个数可变的参数和Lambda表达式
+
+
+

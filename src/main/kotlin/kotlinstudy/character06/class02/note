@@ -1,0 +1,84 @@
+函数的形参
+
+
+1 命名参数（kotlin允许调用函数的时候通过名字传入参数值）
+
+示例
+
+
+    //直接调用（传统方式）  根据位置传参
+    println(area(1.0, 2.0, 3.0))
+    //完全根据参数名
+    println(area(width = 3.0, length = 1.0, height = 2.0))
+    //部分使用位置  部分使用命名（这种方法命名参数必须位于位置参数之后，也就是说 命名参数后还是命名参数）
+    println(area(3.0, width = 1.0, height = 2.0))
+
+
+
+
+2 形参默认值  （推荐将 具有默认值的参数放到最后）
+
+
+3 （tailrec）尾递归函数（当函数将调用自身作为它执行的最后一行代码,且递归调用后没有更多代码，可以使用尾递归语法）
+
+    示例：
+    //计算阶乘(常规写法)
+
+    fun fact(i: Int): Int {
+
+        if (i == 1) {
+            return 1
+        } else {
+
+            return fact(i - 1) * i
+        }
+    }
+
+    //使用尾递归函数（使用场景  调用自身作为最后一行代码，并且递归调用后没有更多代码）
+    //可以减少内存消耗
+    tailrec fun factRec(n: Int, total: Int = 1): Int =
+        if (n == 1) total else factRec(n - 1, n * total)
+
+
+
+
+
+
+
+4 (vararg)个数可变的形参
+一个函数只能有一个可变参数
+ 不要求放到最后
+ 当可变形参在开始位置时   后面的参数需要使用命名参数赋值
+
+//个数可变的形参（本质就是数组参数） 一个函数只能有一个可变参数   不要求放到最后
+
+fun funVararg(a: Int, vararg books: String) {
+
+    for (book in books) {
+        println(book)
+    }
+    println(a)
+}
+
+//当可变形参在开始位置时   后面的参数需要使用命名参数赋值
+fun funVararg1(vararg books: String, a: Int) {
+
+    for (book in books) {
+        println(book)
+    }
+    println(a)
+}
+
+
+使用  *数组名称 可以  将一个数组赋值给  可变形参
+  var arr = arrayOf("哈哈", "格列佛游记", "鲁宾逊漂流记")
+
+  funVararg1(*arr, a = 10)
+
+
+
+
+
+
+
+

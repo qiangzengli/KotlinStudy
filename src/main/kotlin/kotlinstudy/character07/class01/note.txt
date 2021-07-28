@@ -1,0 +1,117 @@
+1  定义类
+
+语法：
+        【修饰符】 class 类名 【constructor 主构造器】
+        0到多个次构造器定义...
+        0到多个属性...
+        0到多个方法...
+
+        如果一个非抽象类 没有指定构造方法  则系统默认提供一个使用public 修饰的构造器
+
+
+        修饰符  为 public （完全可见）   internal（模块可见）     private （本类可见）（只能出现其中一个）
+
+                final  表示一个类不能有子类
+                open   表示一个类有子类
+                abstract  也只能出现一个
+
+
+
+              类的访问修饰符只能是  public  internal  private
+
+
+
+2   定义  属性
+
+语法：
+[修饰符]   var|val 属性名： 类型 [=默认值]
+             成员变量的访问修饰符可以是 public  internal  protected (不使用修饰符和使用这三个效果相同)
+                                        private （如果给属性使用private  就会作为幕后字段使用）
+
+               成员变量也可以使用 final  open  abstract
+
+
+            getter|setter    自定义getter |setter 方法
+
+              使用val  定义的  属性为只读属性  不能定义 setter方法
+
+
+             类中方法的定义与顶层函数一致
+             区别在于：  顶层函数不能使用  protected, abstract final 修饰符
+             方法可以使用public private protected internal   final open abstract
+
+
+
+3  定义构造器
+
+语法：
+
+【修饰符】 constructor （形参列表）{
+    //由0条到多条可执行语句组成的构造器执行体
+}
+
+
+
+        构造器的修饰符 可以是  public internal protected private 之一
+
+
+4 对象的产生和使用
+    示例：
+            var person=Person()
+
+
+5 对象的this引用
+
+         使用场景：
+            1 在构造器中引用该构造器正在初始化的对象
+            2 在方法中引用调用该方法的对象
+
+            在一个方法的方法体中使用this  ，它代表的对象想不能确定的，但是它的类型是确定的
+            谁调用了该方法，this就代表谁
+
+
+            示例：
+
+            class Dog {
+
+                fun run() {
+                    println("run")
+                    this.jump()
+
+                    println(this)
+                }
+
+
+                fun jump() {
+                    println("jump")
+
+
+                }
+
+
+            }
+
+
+            //这个方法中的run   方法中的   this  将会分别代表两个对象
+
+            fun main() {
+
+                var dog = Dog()
+                dog.run()
+
+                var dog1 = Dog()
+                dog1.run()
+
+
+
+
+            }
+
+6   this用在构造器中
+
+
+7 当返回的类型为当前this的类型   return  this
+
+
+
+

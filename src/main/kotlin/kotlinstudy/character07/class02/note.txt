@@ -1,0 +1,192 @@
+1 方法与函数的关系
+
+  方法和函数是统一的   定义在类中的方法依然可以独立出来
+ 示例：
+
+  class Dog {
+
+      //这个方法的类型为   （）->Unit
+      fun run() {
+          println("${this}run()")
+      }
+
+      //这个方法的类型为    （food:Stirng）->Unit
+      fun eat(food: String) {
+
+          println("${this}eating${food}")
+
+      }
+  }
+
+
+
+  fun main() {
+
+  //    var run: (Dog) -> Unit = Dog::run     //详解  虽然  Dog类中的run方法 类型为()->Unit   但是因为此方法是Dog类所有，所以需要Dog类作为第一参数传入因此  Dog::run 的类型为(Dog)->Unit
+   函数引用是使用:: 由于方法是在类中，所以需要指定具体的类
+      var run = Dog::run
+
+
+      var d = Dog()
+      var d1 = Dog()
+
+      run(d)
+      run(d1)
+
+
+      var eat: (Dog, String) -> Unit = Dog::eat
+
+      eat(d, "骨头")
+      eat(d1, "骨头")
+  }
+
+
+  2 中缀表示法(infix)  只能有一个参数  因为三目运算符后面只能跟一个参数
+
+
+    示例：
+
+    class Apple(weight: Double) {
+        var weight = weight
+        override fun toString(): String {
+            return "Apple(weight=$weight)"
+        }
+
+
+        //定义中缀方法 使用infix修饰
+
+
+        infix fun add(other: Apple): ApplePack {
+            return ApplePack(this.weight + other.weight)
+        }
+
+
+        infix fun drop(other: Apple): Apple {
+            this.weight -= other.weight
+
+            return this
+        }
+
+    }
+
+
+
+    class ApplePack(weight: Double) {
+        var weight = weight
+        override fun toString(): String {
+            return "ApplePack(weight=$weight)"
+        }
+
+
+    }
+
+
+
+
+        var origin = Apple(3.5)
+
+        //使用add
+
+        val ap = origin add Apple(2.4)
+
+        println(ap)
+
+
+        val a=origin drop Apple(2.1)
+        println(a)
+
+
+
+
+
+
+
+    3 componentN  方法与解构
+
+
+   kotlin  允许将一个对象的N个属性解构 给多个变量
+
+   语法为：
+
+            var (name,pass)=user
+
+            含义为：将user的两个属性解构为name和pass  类型由user中的属性类型决定
+
+    示例：
+
+            class User(name: String, age: Int, weight: Float) {
+                var name = name
+                var weight = weight
+                var age = age
+
+
+                operator fun component1() = this.name
+                operator fun component2() = this.weight
+                operator fun component3() = this.age
+            }
+
+
+
+
+    var (name, age, weight) = User("李增强", 20, 62.1F)
+
+    println(name)
+    println(age.toString())
+    println(weight.toString())
+
+
+
+    同时解构可以制定  使用的解构参数（"_"）代表跳过某些字段   var(,,,)这里面的参数与定义的operator 方法位置一致
+
+
+    var (_, _, weight1) = User("人相亲", 20, 43.9F)
+
+    println(weight1)
+
+
+
+
+    4  数据类和返回多个值的函数
+
+    为了简化解构的实现  kotlin提供了一种特殊的类   ：数据类  ，数据类专门用来封装数据
+
+        数据类的要求：
+
+
+            1 使用data修饰
+            2 主构造器至少有一个参数
+            3 主构造器所有参数需要使用val 或var 声明为属性。
+            4 数据类不能使用 abstract  open  sealed 修饰，也不能定义成内部类
+            5  定义成数据类之后会自动生成一下内容
+                        生成equals() /hashCode()方法
+                        自动重写toString()方法
+                        为每个属性自动生成operator 修饰的 componentN()方法
+                        生成copy() 方法  用于完成对象复制
+
+ Kotlin提供了Pair 和 Triple 这两个数据类  ，Pair可以接受任意类型的两个参数
+ Triple 任意类型的三个参数，所以，在某些需要快速开发的场景下，可以使用这两个数据类
+
+
+
+5 在Lambda表达式中解构
+
+Kotlin允许对Lambda表达式进行解构
+
+
+示例：    val map = mapOf(Pair("name", "lizengqiang"), Pair("sex", "男"))
+       map.mapValues { (_, value) -> println(value) }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

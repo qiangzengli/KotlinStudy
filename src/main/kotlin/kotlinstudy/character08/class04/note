@@ -1,0 +1,100 @@
+接口
+
+1  接口的定义
+
+语法：
+[修饰符]  interface 接口名：父接口1 ，父接口2.....{
+
+        零个到多个属性定义
+        零个到多个方法定义
+        零个到多个嵌套类，嵌套接口，嵌套枚举定义
+
+}
+
+修饰符  public internal |private   其中一个  ，不写默认是 public
+ 多继承接口，不能继承类
+
+Kotlin 接口既可以包含抽象方法，也能包含非抽象方法  接口中的属性没有幕后字段，所以
+无法保存状态，所以接口中的属性要么声明为抽象，要么提供getter  setter方法
+
+接口中没有构造器和初始化块定义
+
+kotlin接口中的成员可支持private  和  public
+
+
+示例：
+
+interface Outputable {
+    //只读属性定义了getter 非抽象属性
+    val name: String
+        get() = "输出设备"
+
+    //只读属性没有定义getter  抽象属性
+    var brand: String
+
+    //读写属性没有定义setter getter 抽象属性
+    var category: String
+
+
+    var temp: String
+    var location: String
+        get() = temp
+        set(value) {
+            temp = value
+        }
+
+
+    //接口中的非抽象方法可以使用ｐｒｉｖａｔｅ　修饰
+
+    private fun test() {
+        println("test")
+    }
+
+
+
+
+}
+
+
+２　接口的继承
+
+interface InterfaceA {
+    val proA: Int
+        get() = 5
+
+    fun testA() {
+        println("Ａ")
+    }
+}
+
+interface InterfaceB {
+    val proB: Int
+        get() = 2
+
+    fun testB()
+}
+
+interface InterfaceC : InterfaceA, InterfaceB {
+    val proC: Int
+        get() = 3
+
+    fun testC()
+}
+
+
+3 使用接口
+接口不能创建实例，但是可以用于声明变量。当使用接口来声明变量时，这个引用类型的变量
+必须引用到其实现类的对象。除此之外，接口的主要用途就是被实现类实现
+
+接口用途：
+1定义变量，也可用于类型转换
+2被其他类实现
+
+一个类可以实现一个或多个接口
+
+实现接口和继承一样 ，可以得到父类中所有的方法和属性（包括抽象和非抽象）
+
+
+
+
+

@@ -1,0 +1,51 @@
+1 定义泛型接口，类
+
+示例：
+
+open class Apple<T> {
+    open var info: T?
+
+    constructor() {
+        info = null
+    }
+
+
+    constructor(info: T) {
+        this.info = info
+    }
+}
+
+    var a1: Apple<String> = Apple<String>("苹果")
+    println(a1.info)
+
+    var a2: Apple<Int> = Apple(3)
+    println(a2.info)
+
+    var a3 = Apple(5.67)
+    println(a3.info)
+
+
+    2 从泛型类派生子类  Kotlin 要求在继承类中明确制定泛型的类型
+
+    open class Apple<T> {
+        open var info: T?
+
+        constructor() {
+            info = null
+        }
+
+
+        constructor(info: T) {
+            this.info = info
+        }
+
+
+    }
+
+     class RedFuji : Apple<String>() {
+
+
+    }
+
+
+

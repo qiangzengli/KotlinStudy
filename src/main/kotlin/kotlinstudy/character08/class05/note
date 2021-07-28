@@ -1,0 +1,43 @@
+嵌套类和内部类
+嵌套类（相当于静态内部类） ：只要将一个类放到另一个类的内部定义，这个类就变成了
+嵌套类，相当于java中的静态内部类
+
+内部类（非静态内部类）：使用inner 修饰的嵌套类叫做内部类，县党羽 java中的
+非静态内部类
+
+示例：
+
+class OutClass {
+    private var name: String = "OutClass"
+
+    //使用inner 修饰的是非静态内部类 调用需要创建对象调用OutClass().NestClass().hello()
+    inner class InnerClass {
+        private var name: String = "innerClass"
+
+        fun hello() {
+            println(this@OutClass.name)
+        }
+
+    }
+
+
+    //直接定义的相当于静态内部类 使用直接OutClass.NestClass().hello()
+    class NestClass {
+
+
+        fun hello() {
+            println("NestClass")
+        }
+    }
+
+}
+
+
+Kotlin类中的成员除了嵌套类  全部都是非静态成员 因此嵌套类不可访问外部类的其他任何成员
+
+只能访问其他嵌套类
+
+
+
+
+局部嵌套类

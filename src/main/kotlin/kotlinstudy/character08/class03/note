@@ -1,0 +1,87 @@
+1 抽象类
+
+ 抽象类必须使用abstract修饰符修饰，抽象成员也必须使用abstract修饰符来修饰，
+抽象方法没有方法
+ 抽象类不能实例化，无法调用抽象类的构造器创建抽象类的实例，即使抽象类中不包含任何抽象成员
+
+抽象类可以包含属性，方法（普通方法和抽象方法），构造器，初始化块，嵌套类（接口，枚举）。抽象类的构造器主要是为了被子类调用
+
+ 含有抽象成员的类（包括直接定义一个抽象成员；或继承了一个抽象父类，但没有完全实现父类包含的抽象成员；或实现了一个接口，
+没有完全实现接口包含的抽象成员），只能被定义成抽象类
+
+抽象类有得有失   得到的是可以包含抽象成员  失去的是不能创建实例
+
+
+
+
+5 密封类：
+
+密封类是一种特殊的抽象类 ，专门用来派生子类
+
+密封类与普通抽象类的区别在于：密封类的子类是固定的。密封类的子类必须与密封类本身在同一个文件中，这样就限制了在其他文件中
+派生子类
+
+示例；
+
+
+package zengqiang.kotlinstudy.character08.class03
+
+/**
+ * Time: 2020-03-25 上午1:48
+ * Author:alan
+ * Desc:
+ */
+sealed class Apple {
+    abstract fun taste()
+
+}
+
+open class RedFushi : Apple() {
+    override fun taste() {
+        println("红富士香甜可口")
+    }
+
+
+}
+
+open class Gala : Apple() {
+    override fun taste() {
+        println("Gala口感清脆")
+
+    }
+
+}
+
+
+fun main() {
+
+
+    var apple = RedFushi()
+
+    apple.taste()
+
+
+    var gale = Gala()
+    gale.taste()
+
+
+
+    judge(apple)
+    judge(gale)
+}
+
+
+fun judge(apple: Apple) {
+    when (apple) {
+        is RedFushi -> println("红富士苹果")
+
+        is Gala -> println("嘎啦果")
+    }
+
+
+}
+
+
+
+
+

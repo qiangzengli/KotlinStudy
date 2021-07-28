@@ -1,0 +1,159 @@
+泛型函数
+
+
+示例 ：
+
+    fun <T> copy(from: List<T>, to: MutableList<in T>) {
+
+        for (ele in from) {
+            to.add(ele)
+        }
+    }
+
+
+    //为泛型T 定义扩展函数
+    fun <T> T.toBookString(): String {
+        return "《${this.toString()}》"
+    }
+
+
+
+
+
+    var strList = listOf("java", "Kotlin")
+    var objList: MutableList<Any> = mutableListOf(1, 2, "Android")
+
+
+    //指定泛型函数的T 为String类型
+
+    copy<String>(strList, objList)
+
+    println(objList)
+
+
+    var intList = listOf(7, 13, 19, 17)
+
+    //不指定泛型函数T的类型  系统推断出T 为Int 类型
+    copy(intList, objList)
+    println(objList)
+
+
+
+
+
+    val a = 2
+
+    println(a.toBookString<Int>())
+    //自定推断出了类型
+
+    println(2.3.toBookString())
+
+
+
+
+
+ 具体化参数
+
+ Kotlin 允许在内联函数中使用reified修饰泛型形参，这样即可将该泛型形参变成一个具体化的类型参数
+ 。一旦将泛型形参变成具体化的类型参数，接下来在该函数中就可以像使用普通类型一样使用该类型参数  ，
+ 包括  is  as  运算符
+
+
+
+
+示例：
+//    println(findData(Integer::class.java))
+//    println(findData(java.lang.Double::class.java))
+
+
+    println(findData<java.lang.Integer>())
+    println(findData<java.lang.Character>())
+
+
+
+//不适用reified和 inline
+
+fun <T> findData(clazz: Class<T>): T? {
+    for (ele in db) {
+        if (clazz.isInstance(ele)) {
+            @Suppress("UNCHECKED_CAST")
+            return ele as? T
+        }
+
+    }
+
+    return null
+
+}
+
+//使用内联函数和 reified
+inline fun <reified T> findData(): T? {
+    for (ele in db) {
+        if (ele is T) {
+            return ele
+        }
+    }
+
+    return null
+}
+
+
+
+ 设置类型形参的上限
+
+ 示例：
+
+
+ class Apple<T : Number> {
+
+     var col: T
+
+     constructor(col: T) {
+
+         this.col = col
+     }
+
+ }
+
+
+
+
+ var ai = Apple<Int>(2)
+
+    //显式指定泛型函数的T 是 Double类型
+
+    var ad = Apple<Double>(4.3)
+
+
+    //编译错误  因为String  不是Number 以及Number的子类
+//    var ap = Apple<String>("hello")
+
+
+
+泛型函数也可以指定泛型上限
+
+
+定义泛型的时候没有制定上限的话   它的默认上限是  Any?
+
+
+
+由于在尖括号中  只能定义一个上限 ，所以如果要为泛型定义多个上限，则需要单独使用
+单独的where  字句
+
+
+//为T指定多个上限
+class Apple<T> where T : Comparable<T>, T : Cloneable {
+
+
+    //为函数中的泛型制定多个上限
+    fun <T> cloneWhenGreater(list: List<T>, threshold: T)
+            where T : Comparable<T>, T : Cloneable {
+
+
+    }
+
+}
+
+
+
+

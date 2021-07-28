@@ -1,0 +1,114 @@
+多态
+
+1 多态性
+
+与Java类似，Kotlin的变量也有两个类型：一个是编译时类型，一个是运行时类型。
+编译时类型由声明该变量时使用的类型决定，运行时类型由实际赋给该变量的对象决定。如果
+编译时类型和运行时类型不一致，就可能出现所谓的多态
+
+open class SuperClass {
+    //父类的名称
+    open var name: String? = SuperClass::class.simpleName
+    fun superClass() {
+        println("父类特有的方法")
+    }
+
+    //父类被覆盖的方法
+    open fun test() {
+        println("父类被覆盖的方法")
+
+    }
+
+}
+
+class SubClass : SuperClass() {
+
+    override var name: String? = SubClass::class.simpleName
+
+    fun subClass() {
+        println("子类中特有的方法")
+
+    }
+
+    override fun test() {
+        println("子类覆盖的类的方法")
+    }
+
+}
+
+
+fun main() {
+
+    //编译器和运行期都是SuperClass 类型  不存在多态
+    var superClass: SuperClass = SuperClass()
+    println(superClass.name)
+
+    superClass.superClass()
+    superClass.test()
+
+    //编译器和运行期都是SubClass 类型  不存在多态
+    println()
+
+    var subClass: SubClass = SubClass()
+    println(subClass.name)
+
+    subClass.superClass()
+    subClass.test()
+
+
+    //编译期是SuperClass  运行期是：SubClass
+    var ploymophicSuperClass: SuperClass = SubClass()
+    println()
+    ploymophicSuperClass.superClass()
+    println(ploymophicSuperClass.name)
+    ploymophicSuperClass.test()
+
+    //子类中独有的方法无法访问
+//    ploymophicSuperClass.subClass()
+
+
+}
+
+
+//打印结果 ：
+
+SuperClass
+父类特有的方法
+父类被覆盖的方法
+
+SubClass
+父类特有的方法
+子类覆盖的类的方法
+
+父类特有的方法
+SubClass
+子类覆盖的类的方法
+
+
+
+总结：  在代码中调用方法的时候，只能调用编译期变量类型中的方法和属性
+在程序运行过程中执行的都是 运行期变量类型的方法或属性
+例如  var p:Person=Man()   调用只能调用Person中的属性和方法，执行的是Man中的方法和属性
+
+2  使用 is  检查类型
+
+Kotlin 转换运算符包括 as和as?两个
+
+向上转型  kotlin 可以自动完成  因此强制转型总是向下转型
+为了保证转换不会出错，提供了 is  和 !is
+
+is 运算符 的前一个操作数通常是一个变量，后一个操作数通常是一个类（也可以是接口，可以把接口理解成一种特殊的类）
+
+is  具有自动转换的功能  如果使用  is判断为true后，就会自动把类型转成子类类型
+
+
+3 使用as运算符
+
+除了使用  is自动转型外，Kotlin也支持使用as运算符进行强制转型。Kotlin提供了两个向下转型运算符
+as: 不安全强制转型  可能引发ClassCastException
+as?:安全强制转型
+
+
+
+
+

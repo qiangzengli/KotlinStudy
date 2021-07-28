@@ -1,0 +1,161 @@
+属性和字段
+
+
+1 读写属性和只读属性
+ val 定义只读属性  var定义读写属性
+ 系统只为val生成getter方法  为var生成setter getter方法
+
+
+ 在定义普通属性时要么在定义时显示制定初始值，要么在构造器中制定初始值
+
+
+示例： 自己提供了主构造器，编译器不再提供， 把构造器中的属性赋值给只读属性
+
+
+    class Item(barCode: String, name: String, price: Double) {
+        val barCode = barCode
+        val name = name
+        val price = price
+
+    }
+
+
+
+    var item = Item("200", "哈哈", 20.0)
+    println(item.barCode)
+    println(item.price)
+    println(item.name)
+
+
+
+2 自定义setter，getter方法
+
+  定义setter getter  无须使用关键字fun
+
+class Item(barCode: String, name: String) {
+    val barCode = barCode
+    val name = name
+
+      val price: String //如果get方法中的方法体可以推出返回值的类型 这里可以不写返回值类型
+    //如果只需要改变可见性以及添加注解，允许不重新定义代码实现
+//private set
+//@Inject set
+
+   get() {
+            return barCode + name
+
+        }
+
+}
+
+
+3 幕后字段
+
+    Kotlin中定义一个普通属性时，会生成一个field ，getter 和setter 方法（只读属性只有getter）
+    ，这个field  就是幕后字段
+
+
+    注意：  如果kotlin类的属性有幕后字段，强制要求在定义属性或者构造器中进行赋值
+    如果没有，则不能进行初始化
+
+    何时生成幕后字段：
+
+        1 该属性使用Kotlin自定生成的getter和setter或者其中一个。换句话就是，只读属性必须
+        重写getter方法，读写属性必须重写setter getter方法，否则就会生成幕后字段
+
+        2 在重写getter setter方法时 使用field关键字显式引用了幕后字段
+
+
+     代码示例：
+
+
+      */
+     class Person {
+
+         var name = ""
+             set(newName) {
+
+                 if (newName.length > 6 || newName.length < 2) {
+                     println("name invalid")
+                 } else {
+                     field = newName
+                 }
+
+
+             }
+
+         var age = 0
+             set(newAge) {
+                 if (newAge > 150 || newAge < 0) {
+                     println("age invalid")
+
+                 } else {
+                     field = newAge
+                 }
+             }
+     }
+
+
+
+         var p = Person()
+
+         println(p.age)
+         println(p.name)
+
+
+         p.age = 10
+         p.age = -1
+
+         p.name = "h"
+         p.name = "你好"
+
+
+
+4 幕后属性
+
+在个别情况下 ，开发者希望自己定义field   ，并为该field 提供setter，getter方法，就像java所使用的方法，
+此时可以使用幕后属性。
+幕后属性就是使用private 修饰的属性，Kotlin不会为幕后属性生成任何setter，getter方法。
+因此程序不能直接访问幕后属性，必须由开发者为幕后属性体统getter setter 方法
+
+
+示例：（使用幕后属性是完全自定义setter getter）
+
+    class BlackingProperty(name: String) {
+        //定义private修饰的属性，该属性是幕后属性
+        private var _name: String = name
+
+        var name
+            get() = _name
+            set(newName) {
+                if (newName.length > 5 || newName.length < 2) {
+                    println("您输入的任命不符合要求")
+                } else {
+                    _name = newName
+                }
+            }
+
+    }
+
+
+5  延迟初始化属性
+
+Kotlin 提供了lateinit 修饰符来解决属性的延迟初始化。使用lateinit修饰符可以在定义该属性和在构造器中都不指定初始值。
+
+lateinit 的限制：
+
+        1 只能修饰在类体中声明的可变属性（使用val声明的属性不行，在主构造器中声明的属性也不行）
+        2 lateinit 修饰的属性不能有自定义的getter或setter方法
+        3 lateinit 修饰的属性必须是非空类型
+        4 lateinit 修饰的属性不能是原生类型（即java的8 种基本类型对应的类型）
+
+
+6 内联属性
+   从Kotlin1.1开始 inline 可以修饰没有幕后字段的属性的getter setter方法，
+    既可以单独修饰属性的getter和setter方法；也可以修饰属性本身，这相当于修饰该属性的getter和setter方法
+
+
+
+
+
+

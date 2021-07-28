@@ -1,0 +1,63 @@
+1 Lambda 表达式
+
+   特点：
+           1 总是被大括号包着
+           2 定义Lambda表达式不需要fun 关键字  不需要函数名
+           3 形参列表 在->之前生命，参数类型可以省略
+           4 函数体放在-> 之后
+           5 函数的最后一个表达式作为返回值，无须使用return关键字
+
+
+    示例：
+
+
+
+            fun getMath(type: String, i: Int): (Int) -> Int {
+
+                when (type) {
+
+                    "square" -> return {i:Int-> i * i }
+                    "cube" -> return {i:Int-> i * i * i }
+                    else -> return { i:Int->i*i}
+                }
+
+
+            }
+
+
+
+2 Lambda 表达式的脱离
+
+
+      示例：
+
+
+      var a = java.util.ArrayList<(Int) -> Int>()
+
+      fun main() {
+
+          addFun { it * it }
+          addFun { it * it * it }
+
+
+          println(a.size.toString())
+
+          for (i in a.indices) {
+
+              println(a[i](i + 10))
+
+          }
+
+
+      }
+      fun addFun(lambda: (Int) -> Int) {
+          a.add(lambda)
+
+      }
+
+
+
+
+
+
+

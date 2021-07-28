@@ -1,0 +1,87 @@
+1枚举类
+
+示例：
+
+//枚举类默认继承Enum类  枚举类不能有子类
+ 枚举类的构造器只能使用private
+
+enum class Season {
+    SPRING, SUMMER, FALL, WINTER;
+
+}
+
+ val seasonName = "SUMMER"
+    //根据字符串返回枚举值
+    val s: Season = Season.valueOf(seasonName)
+
+    println(s)
+
+    //直接访问枚举值
+    println(Season.WINTER)
+
+    println(Season.WINTER.name + Season.WINTER.ordinal)
+    println(Season.WINTER.toString())
+
+    println(Season.WINTER.compareTo(Season.FALL))
+
+
+
+2实现接口的枚举类
+
+interface GenderDesc {
+
+    fun desc()
+
+}
+
+enum class Gender : GenderDesc {
+    MALE, FEMALE;
+
+    override fun desc() {
+
+        when (this) {
+            MALE -> println("天行健，君子以自强不息")
+            FEMALE -> println("地势坤，君子以厚德载物")
+
+        }
+    }
+
+
+}
+
+    println(Gender.MALE.desc())
+
+
+
+
+
+3 包含抽象方法的抽象枚举类
+enum class Operation {
+
+    PLUS {
+        override fun eval(x: Double, y: Double): Double = x + y
+    },
+    MINUS {
+        override fun eval(x: Double, y: Double): Double = x - y
+
+    },
+    TIMES {
+        override fun eval(x: Double, y: Double): Double = x * y
+
+    },
+    DIVIDE {
+        override fun eval(x: Double, y: Double): Double = x / y
+
+    };
+
+    abstract fun eval(x: Double, y: Double): Double
+}
+
+
+    println(Operation.PLUS.eval(10.1, 2.4))
+
+
+
+
+
+
