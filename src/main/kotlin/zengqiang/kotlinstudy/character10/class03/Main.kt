@@ -40,11 +40,11 @@ fun main() {
 //    println(findData<java.lang.Character>())
 
 
-    var ai = Apple<Int>(2)
-
-    //显式指定泛型函数的T 是 Double类型
-
-    var ad = Apple<Double>(4.3)
+//    var ai = Apple<Int>(2)
+//
+//    //显式指定泛型函数的T 是 Double类型
+//
+//    var ad = Apple<Double>(4.3)
 
 
     //编译错误  因为String  不是Number 以及Number的子类

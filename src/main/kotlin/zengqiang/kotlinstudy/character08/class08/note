@@ -91,7 +91,7 @@ ReadOnlyProperty 接口定义了一个符合只读属性委托标准的getValue(
 示例：
 
 
-    package zengqiang.kotlinstudy.character08.class08
+    package zengqiang.zengqiang.kotlinstudy.character08.class08
 
     import kotlin.properties.ReadWriteProperty
     import kotlin.reflect.KProperty
@@ -143,7 +143,7 @@ ReadOnlyProperty 接口定义了一个符合只读属性委托标准的getValue(
 
 
 
-package zengqiang.kotlinstudy.character08.class08
+package zengqiang.zengqiang.kotlinstudy.character08.class08
 
 /**
 Time: 2020-03-25 上午9:58
